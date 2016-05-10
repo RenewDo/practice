@@ -12,8 +12,8 @@ void add(int n)
 bool search(int n)
 {
         if(bitmap[n/8] & (128>>n%8))
-			 return true;
-		return false;
+		return true;
+	return false;
 }
 
 int main()
@@ -28,9 +28,9 @@ int main()
 
 	for( i=0; i<5; i++)
 	      if(search(n[i]))   
-			  cout << "find " << n[i] <<endl;
+		    cout << "find " << n[i] <<endl;
 		
-    return 0;
+        return 0;
 
 
 }
