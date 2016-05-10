@@ -4,16 +4,16 @@ using namespace  std;
 class Singleton
 {
 public:
-	  static Singleton* GetInstance()
-	   {
-	           if(instance_ == NULL)
-			   {
-			        instance_ = new Singleton();
-			   }
-			   return instance_;
-	   }
+    static Singleton* GetInstance()
+    {
+	if(instance_ == NULL)
+	{
+		instance_ = new Singleton();
+	}
+		return instance_;
+    }
 	  /*  
-	  //the second method(·ÇÏß³Ì°²È«)
+	  //the second method(éçº¿ç¨‹å®‰å…¨)
 	  static Singleton& GetInstance()
 	   {
 	          static Singleton  instance;
@@ -24,31 +24,32 @@ public:
 	   Singleton& s1 = Singleton::GetInstance();
 	   Singleton& s2 = Singleton::GetInstance();
 	   */
-	  ~Singleton()
-	  {
-	       cout<<" ~Singleton()..."<<endl;
-    	}
-	  class Garbo
-	   {
+      ~Singleton()
+       {
+	    cout<<" ~Singleton()..."<<endl;
+       }
+       
+       class Garbo
+       {
 	    public:
-		      ~Garbo()
-			  {
-			           if(Singleton::instance_ != NULL)
-				        {
-				            delete instance_;
-				        }
-			   }
-		};
+	        ~Garbo()
+	        {
+		     if(Singleton::instance_ != NULL)
+		     {
+			 delete instance_;
+		      }
+	        }
+	};
 private:
-   	   Singleton& operator = (const Singleton& other);
-	   Singleton(const Singleton & other);
-	   Singleton()
-	   {
-	         cout<<"Singleton..."<<endl;
-	    }
-	    static Singleton* instance_;
+      Singleton& operator = (const Singleton& other);
+      Singleton(const Singleton & other);
+      Singleton()
+      {
+	   cout<<"Singleton..."<<endl;
+      }
+      static Singleton* instance_;
 
-		static Garbo garbo_;
+      static Garbo garbo_;
 };
 Singleton * Singleton::instance_;
 Singleton::Garbo Singleton::garbo_;
@@ -56,9 +57,9 @@ Singleton::Garbo Singleton::garbo_;
 int main()
 {
       Singleton *a1 = Singleton::GetInstance();
-	  Singleton *a2 = Singleton::GetInstance();
+      Singleton *a2 = Singleton::GetInstance();
 
-	 // Singleton a3 (*a1); ¿½±´¹¹Ôìº¯Êı
+	 // Singleton a3 (*a1); æ‹·è´æ„é€ å‡½æ•°
 
 	
 	  return 0;
