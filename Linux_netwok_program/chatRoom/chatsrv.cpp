@@ -33,13 +33,13 @@ void do_sendlist(int sock, struct sockaddr_in *cliaddr);
 void chat_srv(int sock)
 {
     	struct sockaddr_in cliaddr;
-	    socklen_t clilen;
+	socklen_t clilen;
     	int n;
     	MESSAGE msg;
     	while(1)
-      {
+        {
 	        	memset(&cliaddr, 0, sizeof(cliaddr));
-      		  clilen = sizeof(cliaddr);
+      		        clilen = sizeof(cliaddr);
 		        n = recvfrom(sock, &msg, sizeof(MESSAGE), 0, (struct sockaddr*)&cliaddr, &clilen);
          		if(n < 0)
          		{
@@ -62,24 +62,24 @@ void chat_srv(int sock)
 	            		default:
 		         	        break;
 	         	}
-     }
+       }
 }
 
 void do_login(MESSAGE& msg, int sock, struct sockaddr_in *cliaddr)
 {
-	     USER_INFO user;
-	     strcpy(user.username, msg.body);
-	     user.ip = cliaddr->sin_addr.s_addr;
-	     user.port = cliaddr->sin_port;
+	    USER_INFO user;
+	    strcpy(user.username, msg.body);
+	    user.ip = cliaddr->sin_addr.s_addr;
+	    user.port = cliaddr->sin_port;
 	   
   	   /*查找用户*/
   	   USER_LIST::iterator it;
   	   for(it=client_list.begin(); it!=client_list.end(); ++it)
   	   {
     		      if(strcmp(it->username, msg.body) == 0)
-      			  {
-	        			  break;
-       			  }
+      		      {
+	        		break;
+       		       }
   	   }
 	    if (it == client_list.end())
 	    {
@@ -92,9 +92,9 @@ void do_login(MESSAGE& msg, int sock, struct sockaddr_in *cliaddr)
 		         reply_msg.cmd = htonl(S2C_LOGIN_OK);
 		         sendto(sock, &reply_msg, sizeof(reply_msg), 0, (struct sockaddr*)cliaddr, sizeof(*cliaddr));
 
-             int count = htonl((int)client_list.size());
-            //发送在线人数 
-            sendto(sock, &count, sizeof(int), 0, (struct sockaddr*)cliaddr, sizeof(*cliaddr));
+                        int count = htonl((int)client_list.size());
+                        //发送在线人数 
+                        sendto(sock, &count, sizeof(int), 0, (struct sockaddr*)cliaddr, sizeof(*cliaddr));
 		        printf("sending user list information to: %s <-> %s:%d\n", msg.body,inet_ntoa(cliaddr->sin_addr), ntohs(cliaddr->sin_port) );
 		         //发送在线列表
 		        for (it=client_list.begin(); it!=client_list.end(); ++it)
@@ -111,7 +111,7 @@ void do_login(MESSAGE& msg, int sock, struct sockaddr_in *cliaddr)
 				         struct sockaddr_in peeraddr;
 				         memset(&peeraddr, 0, sizeof(peeraddr));
 				         peeraddr.sin_family = AF_INET;
-		      	 	   peeraddr.sin_port = it->port;
+		      	 	         peeraddr.sin_port = it->port;
 				         peeraddr.sin_addr.s_addr = it->ip;
 
 				         msg.cmd = htonl(S2C_SOMEONE_LOGIN);
@@ -140,8 +140,8 @@ void do_logout(MESSAGE& msg, int sock, struct sockaddr_in *cliaddr)
 	      	   if(strcmp(it->username, msg.body) == 0)
 		      	       break;
      	}
-	   if(it != client_list.end())
-		          client_list.erase(it);
+	if(it != client_list.end())
+		   client_list.erase(it);
 	 
     	//向其他用户通知有用户登出
   	for(it=client_list.begin(); it!=client_list.end(); ++it)
@@ -149,7 +149,7 @@ void do_logout(MESSAGE& msg, int sock, struct sockaddr_in *cliaddr)
    		     if(strcmp(it->username, msg.body) == 0)
 		   	        continue;
 		       struct sockaddr_in peeraddr;
-	   	     memset(&peeraddr, 0, sizeof(peeraddr));
+	   	       memset(&peeraddr, 0, sizeof(peeraddr));
 		       peeraddr.sin_family = AF_INET;
 		       peeraddr.sin_port = it->port;
 			     peeraddr.sin_addr.s_addr = it->ip;
@@ -167,9 +167,9 @@ void do_sendlist(int sock, struct sockaddr_in *cliaddr)
 	     MESSAGE msg;
 	     msg.cmd = htonl(S2C_ONLINE_USER);
 	     sendto(sock, (const char*)&msg, sizeof(msg), 0, (struct sockaddr*)cliaddr, sizeof(*cliaddr));
-    	 int count = htonl((int)client_list.size());
+    	     int count = htonl((int)client_list.size());
 
-       sendto(sock, (const char*)&count, sizeof(int), 0, (struct sockaddr*)cliaddr, sizeof(*cliaddr));
+             sendto(sock, (const char*)&count, sizeof(int), 0, (struct sockaddr*)cliaddr, sizeof(*cliaddr));
 	     for(USER_LIST::iterator it=client_list.begin(); it!=client_list.end(); ++it)
 	     {
 		       sendto(sock, &*it, sizeof(USER_INFO), 0, (struct sockaddr*)cliaddr, sizeof(*cliaddr));
