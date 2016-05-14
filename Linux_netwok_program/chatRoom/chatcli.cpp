@@ -38,32 +38,30 @@ void sendmsgto(int sock, char* name, char* msg);
 
 void parse_cmd(char* cmdline, int sock, struct sockaddr_in *servaddr)
 {
-	     char cmd[10] = {0};
+       char cmd[10] = {0};
        char *p;
        p = strchr(cmdline, ' ');
-
-	     if (p != NULL)
-	   	       *p ='\0';
-
+       if (p != NULL)
+              *p ='\0';
     	strcpy(cmd, cmdline);
     	if(strcmp(cmd, "exit") == 0)
-	    {
-		        MESSAGE msg;
+	{
+		  MESSAGE msg;
       		  memset(&msg, 0, sizeof(msg));
       		  msg.cmd = htonl(C2S_LOGOUT);
       		  strcpy(msg.body, username);
 
-            if(sendto(sock, &msg, sizeof(msg), 0, (struct sockaddr*)servaddr, sizeof(*servaddr)) < 0)
+                 if(sendto(sock, &msg, sizeof(msg), 0, (struct sockaddr*)servaddr, sizeof(*servaddr)) < 0)
                             ERR_EXIT("sendto");			
-		        printf("user %s has logout server\n", username);
-      		  exit(EXIT_SUCCESS);
+	          printf("user %s has logout server\n", username);
+      	                   exit(EXIT_SUCCESS);
     	}
-	    else if(strcmp(cmd, "send") == 0)
-      {
+	else if(strcmp(cmd, "send") == 0)
+        {
              	char peername[16] = {0};
-		          char msg[MSG_LEN] = {0};
+		char msg[MSG_LEN] = {0};
 		          
-	     	      // send格式： send  user  msg
+	        // send格式： send  user  msg
       	    	//                    p    p2
 
 	         	while(*p++ == ' ');
@@ -88,19 +86,19 @@ void parse_cmd(char* cmdline, int sock, struct sockaddr_in *servaddr)
     	{
 		        MESSAGE msg;
         	 	memset(&msg, 0, sizeof(msg));
-	       	  msg.cmd = htonl(C2S_ONLINE_USER);
+	        	msg.cmd = htonl(C2S_ONLINE_USER);
 		        if(sendto(sock, &msg, sizeof(msg), 0, (struct sockaddr*)servaddr, sizeof(*servaddr)) < 0)
-                   ERR_EXIT("sendto");
-      }
-      else 
-    	{
+                                        ERR_EXIT("sendto");
+       }
+       else 
+       {
 		        printf("bad command\n");
-			      printf("\nCommands are:\n");
-			      printf("send username msg");
-			      printf("list\n");
-			      printf("exit\n");
-			      printf("\n");
-	    }		
+			printf("\nCommands are:\n");
+		        printf("send username msg");
+	                printf("list\n");
+			printf("exit\n");
+			printf("\n");
+	}		
 }
 
 void sendmsgto(int sock, char* name, char* msg)
@@ -110,9 +108,9 @@ void sendmsgto(int sock, char* name, char* msg)
 		         printf("can't send message to self\n");
 		         return ;
 	     }	   
-   	   USER_LIST::iterator it;
+   	     USER_LIST::iterator it;
 	     for(it=client_list.begin(); it!=client_list.end(); ++it)
-   	   {
+   	     {
 		         if(strcmp(it->username,name) == 0)
 				      break;
 	     }
@@ -134,14 +132,14 @@ void sendmsgto(int sock, char* name, char* msg)
 	      memset(&peeraddr, 0, sizeof(peeraddr));
 	      peeraddr.sin_family = AF_INET;
 	      peeraddr.sin_port = it->port;
-    	  peeraddr.sin_addr.s_addr = it->ip;
+    	      peeraddr.sin_addr.s_addr = it->ip;
     	  
 	      in_addr tmp;
 	      tmp.s_addr =it->ip;
 	      printf("send message [%s] to user [%s] <-> %s:%d\n", msg, name, inet_ntoa(tmp), htonl(peeraddr.sin_port));
 
 	      sendto(sock, (const char*)&m, sizeof(m), 0, (struct sockaddr*)&peeraddr, sizeof(peeraddr));
-        return;
+              return;
 } 
 
 void do_chat(const MESSAGE& msg)
@@ -174,7 +172,7 @@ void do_someone_login(MESSAGE& msg)
        	in_addr tmp;
       	tmp.s_addr = user->ip;
       	printf("%s <-> %s:%d has logined server\n", user->username, inet_ntoa(tmp), ntohl(user->port));
-     	  client_list.push_back(*user);
+        client_list.push_back(*user);
 }
 
 void do_someone_logout(MESSAGE& msg)
@@ -186,7 +184,7 @@ void do_someone_logout(MESSAGE& msg)
 	        		    break;
       	}
       	if(it != client_list.end())
-	             client_list.erase(it);
+	         client_list.erase(it);
       	printf("user %s has logout server\n", msg.body);
 }
 
@@ -205,8 +203,8 @@ void chat_cli(int sock)
     	 {
 	        	 memset(username, 0, sizeof(username));
 		         printf("please input your name:");
-             fflush(stdout);
-             scanf("%s", username);
+                         fflush(stdout);
+                         scanf("%s", username);
 		         memset(&msg, 0, sizeof(msg));
 	        	 msg.cmd = htonl(C2S_LOGIN);
 	        	 strcpy(msg.body, username);
@@ -221,9 +219,9 @@ void chat_cli(int sock)
 		          	    printf("user %s has logined server\n", username);
 				            break;
 		         }
-	       }
-	       int count;
-	       recvfrom(sock, &count, sizeof(int), 0, NULL, NULL);
+	}
+	int count;
+         recvfrom(sock, &count, sizeof(int), 0, NULL, NULL);
       	 int n = ntohl(count);
          printf("has %d users logined server\n", n);
 
@@ -236,7 +234,7 @@ void chat_cli(int sock)
 	        	  tmp.s_addr =user.ip;
 
 		        printf("%d %s <-> %s:%d\n", i, user.username, inet_ntoa(tmp), ntohl(user.port));
-	      }
+         }
         printf("\nCommands are:\n");	
         printf("send username msg\n");
         printf("list\n");
@@ -247,36 +245,36 @@ void chat_cli(int sock)
         FD_ZERO(&rset);	
         int nready;
         while(1)
-       {
+        {
 	       	  FD_SET(STDIN_FILENO, &rset);
 	      	  FD_SET(sock, &rset);
 	      	  nready = select(sock+1, &rset, NULL, NULL, NULL);
 	      	  if(nready == -1)
-	        		    ERR_EXIT("select");
+	        	  ERR_EXIT("select");
 			
 	      	  if(nready == 0)
-		           	  continue;
+		           continue;
 
 	      	  if(FD_ISSET(sock, &rset))
 	      	  {
 	        		   peerlen = sizeof(peeraddr);
 		         	   memset(&msg, 0, sizeof(msg));
 		        	   recvfrom(sock, &msg, sizeof(msg), 0, (struct sockaddr*) &peeraddr, &peerlen);
-		             int cmd = ntohl(msg.cmd);
+		                   int cmd = ntohl(msg.cmd);
 		        	   switch(cmd)
 		        	   {
 			           	    case S2C_SOMEONE_LOGIN:
 				                     do_someone_login(msg);
-						              	 break;
+						      break;
 				              case S2C_SOMEONE_LOGOUT:
 				                     do_someone_logout(msg);
-							               break;
+						     break;
 				              case S2C_ONLINE_USER:
 				                     do_getlist(sock);
-							               break;
+						      break;
 			                case C2C_CHAT:
 				                     do_chat(msg);
-							                break;
+						      break;
 				             default:
 				                      break;
 			             }
