@@ -1,0 +1,3 @@
+
+gcc -g ipc.c shmfifo.c shmfifo_send.c -o shmfifo_send
+gcc -g ipc.c shmfifo.c shmfifo_send.c -o shmfifo_recv
